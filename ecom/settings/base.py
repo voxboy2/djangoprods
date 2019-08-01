@@ -4,7 +4,7 @@ from decouple import config
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 
-SECRET_KEY = ('gbsyocydgrdqhauozqdhaplfbjseagkjvvfwwydrqiuhoatgqa')
+SECRET_KEY = ('SECRET_KEY')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -82,12 +82,6 @@ LOGIN_REDIRECT_URL = '/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = ""
-EMAIL_HOST_PASSWORD = ""
-EMAIL_PORT = 587
 
 try:
     from .local_settings import *
