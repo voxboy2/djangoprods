@@ -13,7 +13,7 @@ class Command(BaseCommand):
         
         # logic for renaming the files
 
-        files_to_rename = ['demo/settings/base.py', 'demo/wsgi.py', 'manage.py']
+        files_to_rename = ['demo/settings.py', 'demo/wsgi.py', 'manage.py']
         folder_to_rename = 'demo'
 
         for f in files_to_rename:
