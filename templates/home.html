@@ -1,6 +1,131 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block content %}
+<div id="carousel-example-1z" class="carousel slide carousel-fade pt-4" data-ride="carousel">
+
+    <!--Indicators-->
+    <ol class="carousel-indicators">
+      <li data-target="#carousel-example-1z" data-slide-to="0" class="active"></li>
+      <li data-target="#carousel-example-1z" data-slide-to="1"></li>
+      <li data-target="#carousel-example-1z" data-slide-to="2"></li>
+    </ol>
+    <!--/.Indicators-->
+
+    <!--Slides-->
+    <div class="carousel-inner" role="listbox">
+
+      <!--First slide-->
+      <div class="carousel-item active">
+        <div class="view" style="background-image: url('{% static "img/home_slider1.jpg" %}'); background-repeat: no-repeat; background-size: cover;">
+         
+          <!-- Mask & flexbox options-->
+          <div class="mask rgba-black-strong d-flex justify-content-center align-items-center">
+
+            <!-- Content -->
+            <div class="text-center white-text mx-5 wow fadeIn">
+              <h1 class="mb-4">
+                <strong>FASHBIZ your number 1 store</strong>
+              </h1>
+
+              <p>
+                <strong>Upgrade Your wardrobe at a cheaper rate</strong>
+              </p>
+
+              <p class="mb-4 d-none d-md-block">
+                <strong>Buy Affordable Clothes on FashBiz
+                    On fashBiz we have the right collection of clothes that you need.You can checkout our brands.</strong>
+              </p>
+
+              <a href="/" class="btn btn-outline-white btn-lg">Start
+                Shoping Now
+                <i class="fas fa-shopping-cart ml-2"></i>
+              </a>
+            </div>
+            <!-- Content -->
+
+          </div>
+          <!-- Mask & flexbox options-->
+
+        </div>
+      </div>
+      <!--/First slide-->
+
+      <!--Second slide-->
+      <div class="carousel-item">
+        <div class="view" style="background-image: url('{% static "img/home_slider3.jpg" %}'); background-repeat: no-repeat; background-size: cover;">
+
+          <!-- Mask & flexbox options-->
+          <div class="mask rgba-black-strong d-flex justify-content-center align-items-center">
+
+            <!-- Content -->
+            <div class="text-center white-text mx-5 wow fadeIn">
+              <h1 class="mb-4">
+                <strong>Free Shipping on all order</strong>
+              </h1>
+
+              <p>
+                <strong>Best & free guide of responsive web design</strong>
+              </p>
+
+              <p class="mb-4 d-none d-md-block">
+                <strong>Free Shipping
+                    If you don’t get free shipping at checkout, Conatct Us on our email to save up to $10 per charge!.</strong>
+              </p>
+
+              <a href="#" class="btn btn-outline-white btn-lg">View 
+                Our Shipping Plans
+                <i class="fas fa-truck ml-2"></i>
+              </a>
+            </div>
+            <!-- Content -->
+
+          </div>
+          <!-- Mask & flexbox options-->
+
+        </div>
+      </div>
+      <!--/Second slide-->
+
+      <!--Third slide-->
+      <div class="carousel-item">
+        <div class="view" style="background-image: url('{% static "img/home_slider2.jpg" %}'); background-repeat: no-repeat; background-size: cover;">
+
+          <!-- Mask & flexbox options-->
+          <div class="mask rgba-black-strong d-flex justify-content-center align-items-center">
+
+            <!-- Content -->
+            <div class="text-center white-text mx-5 wow fadeIn">
+              <h1 class="mb-4">
+                <strong>Free Delivery on all order</strong>
+              </h1>
+
+              <p>
+                <strong>Pay On Delivery
+                    After Checking the Product</strong>
+              </p>
+
+              <p class="mb-4 d-none d-md-block">
+                <strong>Pay on Delivery is a payment method that lets you pay with Cash or Card when your order arrives at your doorstep. It is simple, secure, convenient..</strong>
+              </p>
+
+              <a href="/" class="btn btn-outline-white btn-lg">View Our Delivery plans
+                <i class="fas fa-truck ml-2"></i>
+              </a>
+            </div>
+            <!-- Content -->
+
+          </div>
+          <!-- Mask & flexbox options-->
+
+        </div>
+      </div>
+      <!--/Third slide-->
+
+    </div>
+    <!--/.Slides-->
+
   <main>
     <div class="container">
 
@@ -38,17 +163,19 @@
 
           </ul>
           <!-- Links -->
-
-          <form class="form-inline">
-            <div class="md-form my-0">
-              <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-            </div>
-          </form>
+          <form action="{% url 'core:search' %}" class="form-inline" method="GET" value="{{ request.GET.q }}">
+              <div class="md-form my-0">
+                  <input class="form-control mr-sm-2" type="text" name="q" value="{{request.GET.q}}" placeholder="Search Products" aria-label="Search"/>
+                  <input class="btn btn-sm btn-info" type="submit" name="submit" value="Search"/>
+              </div>
+            </form>
         </div>
         <!-- Collapsible content -->
 
       </nav>
       <!--/.Navbar-->
+
+
 
       <!--Section: Products v.3-->
       <section class="text-center mb-4">
@@ -56,13 +183,13 @@
         <div class="row wow fadeIn">
 
           {% for item in object_list %}
-          <div class="col-lg-3 col-md-6 mb-4">
+          <div class="col-lg-3 col-md-6 mb-4  col-sm-3">
 
             <div class="card">
 
               <div class="view overlay">
-                {% comment %} <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12.jpg" class="card-img-top" {% endcomment %}
-                <img src="{{ item.image.url }}" class="card-img-top">
+                <img src="{% if item.image %}{{ item.image.url }}{% else %}
+                {% static 'img/no.png' %}{% endif %}" class="card-img-top">
                 <a href="{{ item.get_absolute_url }}">
                   <div class="mask rgba-white-slight"></div>
                 </a>
@@ -100,6 +227,8 @@
 
       </section>
       <!--Section: Products v.3-->
+
+      
 
       <!--Pagination-->
 

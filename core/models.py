@@ -4,13 +4,17 @@ from django.db import models
 from django.db.models import Sum
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
+from taggit.managers import TaggableManager
+from datetime import datetime
 
 
-CATEGORY_CHOICES = (
-    ('S', 'Shirt'),
-    ('SW', 'Sport wear'),
-    ('OW', 'Outwear')
-)
+#CATEGORY_CHOICES = (
+    #('S', 'Shirt'),
+   # ('SW', 'Sport wear'),
+    #('OW', 'Outwear'),
+    #('SH', 'Shoes'),
+    #('G', 'Gown'),
+#)
 
 LABEL_CHOICES = (
     ('P', 'primary'),
@@ -34,16 +38,48 @@ class UserProfile(models.Model):
         return self.user.username
 
 
+class Category(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated at")
+    title = models.CharField(max_length=255, verbose_name="Title")
+    slug = models.SlugField()
+
+    class Meta:
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
+        ordering = ['title']
+
+    def __str__(self):
+        return self.title
+
+
+    def get_absolute_url(self):
+        return reverse('category', kwargs={'slug': self.slug})
+
+    
+    @property
+    def get_items(self):
+        return Items.objects.filter(categories__title=self.title)
+
+
 class Item(models.Model):
     title = models.CharField(max_length=100)
     price = models.FloatField()
     discount_price = models.FloatField(blank=True, null=True)
-    category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
+    #category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
+    category = models.ForeignKey(Category, verbose_name="Category",
+                                 null=True, blank=True,
+                                 on_delete=models.DO_NOTHING)
     label = models.CharField(choices=LABEL_CHOICES, max_length=1)
     slug = models.SlugField()
     description = models.TextField()
+    description_2 = models.TextField(blank=True, null=True)
     image = models.ImageField()
-
+    image_2 = models.ImageField(null=True)
+    image_3 = models.ImageField(null=True)
+    image_4 = models.ImageField(null=True)
+    tags = TaggableManager()
+    
     def __str__(self):
         return self.title
 
@@ -61,6 +97,32 @@ class Item(models.Model):
         return reverse("core:remove-from-cart", kwargs={
             'slug': self.slug
         })
+
+    
+
+
+class Team(models.Model):
+   name = models.CharField(max_length=200)
+   image = models.ImageField()
+   description = models.TextField(blank=True)
+   phone = models.CharField(max_length=20)
+   email = models.CharField(max_length=50)
+   position = models.CharField(max_length=50)
+   is_ceo = models.BooleanField(default=False)
+
+   def __str__(self):
+    return self.name
+
+class Contact(models.Model):
+  name = models.CharField(max_length=200)
+  email = models.CharField(max_length=100)
+  subject = models.CharField(max_length=100)
+  message = models.TextField(blank=True)
+  contact_date = models.DateTimeField(default=datetime.now, blank=True)
+
+  def __str__(self):
+    return self.name
+    
 
 
 class OrderItem(models.Model):
@@ -173,3 +235,25 @@ def userprofile_receiver(sender, instance, created, *args, **kwargs):
 
 
 post_save.connect(userprofile_receiver, sender=settings.AUTH_USER_MODEL)
+
+
+
+class Comment(models.Model): 
+    item = models.ForeignKey(Item,
+                             on_delete=models.CASCADE,
+                             related_name='comments')
+    name = models.CharField(max_length=80) 
+    email = models.EmailField() 
+    body = models.TextField() 
+    phone = models.CharField(max_length=25)
+    created = models.DateTimeField(auto_now_add=True) 
+    updated = models.DateTimeField(auto_now=True) 
+    active = models.BooleanField(default=True) 
+ 
+    class Meta: 
+        ordering = ('created',) 
+    
+    
+ 
+    def __str__(self): 
+        return 'Comment by {} on {}'.format(self.name, self.item)

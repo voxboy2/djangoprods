@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<div id="carousel-example-1z" class="carousel slide carousel-fade pt-4" data-ride="carousel">
+
+  
+
+    <!--Slides-->
+    <div class="carousel-inner" role="listbox">
+
+      <!--First slide-->
+      <div class="carousel-item active">
+        <div class="view" style="background-image: url('{% static "img/home_slider2.jpg" %}'); background-repeat: no-repeat; background-size: cover;">
+
+          <!-- Mask & flexbox options-->
+          <div class="mask rgba-black-strong d-flex justify-content-center align-items-center">
+
+            <!-- Content -->
+            <div class="text-center white-text mx-5 wow fadeIn">
+              <h1 class="mb-4">
+                <strong>FASHBIZ Online Shopping - No. 1 Shopping Destination</strong>
+              </h1>
+
+              <p>
+                <strong>For your wares</strong>
+              </p>
+
+              <p class="mb-4 d-none d-md-block">
+                <strong>Buy Affordable Clothes on FashBiz
+                    On fashBiz we have the right collection of clothes that you need.You can checkout our brands.</strong>
+              </p>
+
+            </div>
+            <!-- Content -->
+
+          </div>
+          <!-- Mask & flexbox options-->
+
+        </div>
+      </div>
+      <!--/First slide-->
+    </div>
+  <!--Main layout-->
+
+  <main>
+
+    <!--Navbar-->
+    <div class="container">
+   <!--Navbar-->
+   <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-3 mb-5">
+
+    <!-- Navbar brand -->
+    <span class="navbar-brand">Categories:</span>
+
+    <!-- Collapse button -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+      aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="basicExampleNav">
+
+      <!-- Links -->
+
+           <!-- Links -->
+           <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">All
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Shirts</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Sport wears</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Outwears</a>
+            </li>
+
+          </ul>
+          <!-- Link
+
+        
+
+      
+
+      <form class="form-inline">
+        <div class="md-form my-0">
+          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+        </div>
+      </form>
+    </div>
+    <!-- Collapsible content -->
+
+  </nav>
+  <!--/.Navbar-->
+
+
+
+
+  </div>
+
+  <section id="about" class="py-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8">
+          <h2>We Have The Perfect Clothes For You</h2>
+          <p class="lead">Shopping online in anywhere is easy and convenient with fashBiz!</p>
+          <img src="{% static 'img/about.jpg' %}" alt="">
+          <p class="mt-4">FashBiz is your number one online shopping site.Be in the loop this year with new products and offers from FashBiz. Brand your home with 
+              various styles  from Gucci, Vendi, Versache.</p>
+        </div>
+        <div class="col-md-4">
+          {% if ceo_teams %}
+            {% for team in ceo_teams %}
+            <div class="card">
+                <img class="img-responsive card-img-top" src="{{ team.image.url }}" alt="CEO">
+                <div class="card-body">
+                  <h5 class="card-title">{{ team.position }}</h5>
+                  <h6 class="text-secondary">{{ team.name }}</h6>
+                  <p class="card-text">{{ team.description }}
+                  </p>
+                </div>
+              </div>
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Work -->
+  <section id="work" class="bg-dark text-white text-center">
+    <h2 class="display-4">We Work For You</h2>
+    <h4>we make online shopping fun with our new arrivals fashion items and more.!</h4>
+    <hr>
+    <a href="home.html" class="btn btn-secondary text-white btn-lg">View Our Featured Products</a>
+  </section>
+
+  
+  </main>
+  <!--Main layout-->
+<!-- Team -->
+<section id="team" class="py-5">
+    <div class="container">
+      <h2 class="text-center">Our Team</h2>
+      <div class="row text-center">
+        {% if teams %}
+          {% for team in teams %}
+          <div class="col-md-4">
+              <img src="{{ team.image.url }}" alt="" class="img-responsive rounded-circle mb-3">
+              <h4>{{ team.name }}</h4>
+              <p class="text-secondary">
+                <i class="fas fa-male text-secondary mb-3"></i>  {{ team.position }}</p>
+                
+              <hr>
+              <p>
+                <i class="fas fa-phone"></i> {{ team.phone }}</p>
+              <p>
+                <i class="fas fa-envelope-open"></i> {{ team.email }}</p>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="col-md-12">
+            <p>No members Available</p>
+          </div>
+        {% endif %}       
+      </div>
+    </div>
+  </section>
+  
+
+  {% endblock %}

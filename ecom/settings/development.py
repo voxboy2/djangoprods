@@ -1,7 +1,7 @@
 from .base import *
 
 DEBUG = True
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1','localhost']
 
 INSTALLED_APPS += [
     'debug_toolbar'
@@ -41,5 +41,16 @@ DATABASES = {
     }
 }
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'fashbiz',
+        'USER': 'fashboy',
+        'PASSWORD': 'pass',
+        'HOST': 'localhost',
+    }
+}
+
 STRIPE_PUBLIC_KEY = ''
 STRIPE_SECRET_KEY = ''
+              

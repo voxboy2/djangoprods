@@ -4,11 +4,15 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView, View
-from django.shortcuts import redirect
+from django.views.generic import ListView, DetailView, View ,CreateView
+from django.shortcuts import redirect,reverse
 from django.utils import timezone
-from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm
-from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile
+from django.views.generic.edit import FormMixin
+from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm ,CommentForm
+from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile, Team ,Contact,Category, \
+    Comment
+from django.core.mail import send_mail
+from django.db.models import Q
 
 import random
 import string
@@ -79,7 +83,7 @@ class CheckoutView(View):
                 use_default_shipping = form.cleaned_data.get(
                     'use_default_shipping')
                 if use_default_shipping:
-                    print("Using the default shipping address")
+                    print("Using the defualt shipping address")
                     address_qs = Address.objects.filter(
                         user=self.request.user,
                         address_type='S',
@@ -195,7 +199,7 @@ class CheckoutView(View):
                 if payment_option == 'S':
                     return redirect('core:payment', payment_option='stripe')
                 elif payment_option == 'P':
-                    return redirect('core:payment', payment_option='paystack')
+                    return redirect('core:payment', payment_option='paypal')
                 else:
                     messages.warning(
                         self.request, "Invalid payment option selected")
@@ -362,9 +366,36 @@ class OrderSummaryView(LoginRequiredMixin, View):
             return redirect("/")
 
 
-class ItemDetailView(DetailView):
-    model = Item
+class ItemDetailView(FormMixin,DetailView):
     template_name = "product.html"
+    model = Item
+    form_class = CommentForm
+
+    #def get_success_url(self):
+        #return reverse('core:product', kwargs={'slug': self.slug})
+        
+    def get_success_url(self):
+        return reverse('core:product', kwargs={'slug': self.object.slug})
+
+    def get_context_data(self, **kwargs):
+        context = super(ItemDetailView, self).get_context_data(**kwargs)
+        context['form'] = CommentForm(initial={'item': self.object})
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        form.save()
+        return super(ItemDetailView, self).form_valid(form)
+
+     
+    
 
 
 @login_required
@@ -514,3 +545,72 @@ class RequestRefundView(View):
             except ObjectDoesNotExist:
                 messages.info(self.request, "This order does not exist.")
                 return redirect("core:request-refund")
+
+
+
+def about(request):
+    # Get all r=teams
+    teams = Team.objects.order_by('-name')
+
+    # Get CEO
+    ceo_teams = Team.objects.all().filter(is_ceo=True)
+
+    context = {
+        'teams': teams,
+        'ceo_teams': ceo_teams
+    }
+
+    return render(request, 'about.html', context)
+
+
+def contact(request):
+    if request.method == 'POST':   
+        name = request.POST['name']
+        email = request.POST['email']
+        subject = request.POST['subject']
+        message = request.POST['message']
+
+        contact = Contact(name=name, email=email, subject=subject, message=message)
+
+        contact.save()
+        #send_mail
+        send_mail(
+            'Product has been inquired',
+            'There has been an inquiry Sign into the admin Panel',
+            'ebieroma323@gmail.com',
+            ['ebieroma324@gmail.com'],
+            
+            fail_silently=False
+        )
+
+        messages.success(request, 'Your message has been submitted, a staff will get back to you soon')
+        return redirect('core:contact')
+
+    else:
+        return render(request, 'contact.html')
+
+def category(request):
+    categories = Category.objects.all() 
+    return render (request, 'category.html', {'categories': categories}) 
+
+def search(request):
+    if request.method == 'GET':
+        query= request.GET.get('q')
+
+        submitbutton= request.GET.get('submit')
+
+        if query is not None:
+            lookups= Q(title__icontains=query) | Q(description__icontains=query) |  Q(description_2__icontains=query)
+
+            results= Item.objects.filter(lookups).distinct()
+
+            context={'results': results,
+                     'submitbutton': submitbutton}
+
+            return render(request, 'search.html', context)
+
+        else:
+            return render(request, 'search.html')
+
+    else:
+        return render(request, 'search.html')
