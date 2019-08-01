@@ -106,4 +106,9 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 STRIPE_PUBLIC_KEY = ''
 STRIPE_SECRET_KEY = ''
 
+try:
+    from .local_settings import *
+except ImportError:
+    pass
+
 
