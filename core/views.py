@@ -72,7 +72,8 @@ class CheckoutView(View):
             return render(self.request, "checkout.html", context)
         except ObjectDoesNotExist:
             messages.info(self.request, "You do not have an active order")
-            return redirect("core:checkout")
+            return redirect("core:home")
+
 
     def post(self, *args, **kwargs):
         form = CheckoutForm(self.request.POST or None)
